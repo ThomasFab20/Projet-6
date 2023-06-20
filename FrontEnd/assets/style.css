@@ -135,8 +135,41 @@ li:hover {
 
 .gallery img {
 	width: 100%;
-
 }
+
+.filters{
+	display: flex;
+	justify-content: center;
+	gap: 10px;
+	padding-bottom: 50px;
+}
+
+.filter{
+	background-color: white;
+	border-radius: 60px;
+	border: 1px solid #1D6154;
+	color: #1D6154;
+	font-family: 'Syne';
+	padding: 10px 20px;
+	font-size: 16px;
+	font-weight: 700;
+}
+
+.filter:hover{
+	background-color: #1D6154;
+	color: white;
+	transition: all 0.5s;
+}
+
+.selected{
+	background-color: #1D6154;
+	color: white;
+}
+
+.inactive{
+	display: none;
+}
+
 #contact {
 	width: 50%;
 margin: auto;
