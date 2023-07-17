@@ -59,11 +59,301 @@ body {
 	font-family: 'Work Sans' ;
 	font-size: 14px;
 }
+
+.inactive{
+	display: none;
+}
+
+.overlay{
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal{
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	background-color: white;
+	border-radius: 2%;
+	min-height: 500px;
+	min-width: 700px;
+	margin-top: 30px;
+}
+
+.close{
+	position: absolute;
+	top: 20px;
+	right: 20px;
+	border: none;
+	background-color: white;
+	font-size: 20px;
+	transition: transform 0.5s ease-in-out;
+	scale: (1);
+	box-shadow: inset;
+	cursor: pointer;
+}
+
+.close:hover{
+	transform: scale(1.5);
+}
+
+.modal-header{
+	text-align: center;
+	padding: 50px;
+}
+
+.modal-header-title{
+	font-family: inherit;
+	color: black;
+	font-size: 26px;
+}
+
+.modal-body{
+	display: flex;
+	flex-direction: column;
+	gap: 30px;
+	padding: 0 100px 50px 100px;
+}
+
+.modal-projects{
+	display: flex;
+	gap: 30px;
+	flex-wrap: wrap;
+}
+
+.edit-project{
+	cursor: pointer;
+}
+
+.modal-body figure{
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	gap: 5px;
+	margin-top: 10px;
+	cursor: pointer;
+}
+
+.fa-trash-can{
+	color: white;
+	background-color: black;
+	position: absolute;
+	top: 5px;
+	right: 5px;
+	font-size: 10px;
+	padding: 3px 3px;
+	cursor: pointer;
+}
+
+.fa-arrows-up-down-left-right{
+	color: white;
+	background-color: black;
+	position: absolute;
+	top: 5px;
+	right: 25px;
+	font-size: 10px;
+	padding: 3px 3px;
+	cursor: pointer;
+}
+
+.modal-body img{
+	object-fit: cover;
+	height: 100px;
+}
+
+.separator{
+	height: 2px;
+	background-color: #B3B3B3;
+	padding: 0 100px;
+}
+
+.modal-button{
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 20px;
+}
+
+.add-picture{
+	background-color: white;
+	border-radius: 60px;
+	border: 1px solid #1D6154;
+	color: #1D6154;
+	font-family: 'Syne';
+	padding: 10px 50px;
+	font-size: 16px;
+	font-weight: 700;
+	cursor: pointer;
+	transition: background-color 0.5s;
+	width: fit-content;
+}
+
+.add-picture:hover{
+	background-color: #1D6154;
+	color: white
+}
+
+.delete-gallery{
+	border: none;
+	background-color: white;
+	font-family: inherit;
+	font-size: 16px;
+	color: red;
+	cursor: pointer;
+}
+
+.modal-return{
+	position: absolute;
+	top: 20px;
+	left: 20px;
+	border: none;
+	background-color: white;
+	font-size: 20px;
+	transition: transform 0.5s ease-in-out;
+	scale: (1);
+	box-shadow: inset;
+	cursor: pointer;
+}
+
+.modal-return:hover{
+	transform: scale(1.5);
+}
+
+.file-upload{
+	width: 100%;
+	background-color: #E8F1F6;
+	display: flex;
+	flex-direction: column;
+	gap: 15px;
+	align-items: center;
+	padding: 30px 0;
+}
+
+.file-upload input{
+	display: none;
+}
+
+.picture-upload{
+	background-color: #d1d1d1;
+	border-radius: 60px;
+	border: 1px solid #d1d1d1;
+	color: #3b7992;
+	font-family: 'Syne';
+	padding: 15px 25px;
+	font-size: 16px;
+	font-weight: 700;
+	cursor: pointer;
+	transition: background-color 0.5s;
+	width: fit-content;
+}
+
+.fa-image{
+	font-size: 80px;
+}
+
+.modal-body form {
+	text-align: left;
+	display: flex;
+	flex-direction: column;
+}
+
+.modal-body select {
+	height: 50px;
+	font-size: 1.2em;
+	border: none;
+	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
+	padding: 0 20px;
+}
+
+.modal-body input {
+	height: 50px;
+	font-size: 1.2em;
+	border: none;
+	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
+	padding: 0 20px;
+}
+
+.modal-body label {
+	margin: 2em 0 1em 0;
+}
+
+.modal-body textarea {
+	border: none;
+	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
+}
+
+#project-submit{
+	cursor: pointer;
+	background-color: #d1d1d1;
+}
+
 header {
 	display: flex;
 	justify-content: space-between;
-	margin: 50px 0
+	margin: 50px 0;
 }
+
+.editor-banner{
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	padding: 5px 0px;
+	background-color: black;
+	color: white
+}
+
+.editor-banner-content{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 20px;
+}
+
+.editor-banner button{
+	background-color: white;
+	border-radius: 60px;
+	border: 1px solid white;
+	color: black;
+	font-family: 'Syne';
+	padding: 10px 15px;
+	font-size: 12px;
+	cursor: pointer;
+}
+
+.editor-mode{
+	display: flex;
+	gap: 5px;
+}
+
+.edit-content{
+	display: flex;
+	gap: 5px;
+}
+
+figure .edit{
+	width: 80%;
+	margin: auto;
+}
+
+.edit button{
+	border: none;
+	background-color: white;
+	font: inherit;
+	padding: 0;
+	margin: 0;
+	cursor: pointer;
+}
+
+.header-margin{
+	margin: 100px 0;
+}
+
 section {
 	margin: 50px 0
 }
@@ -81,7 +371,7 @@ h1 > span {
 	font-family: 'Work Sans';
 	font-size:10px;
 	letter-spacing: 0.1em;
-;
+
 }
 
 h2{
@@ -104,13 +394,19 @@ nav li {
 li:hover {
 	color: #B1663C;
 }
+
 #introduction {
 	display: flex;
 	align-items: center;
 }
+
 #introduction figure {
-	flex: 1
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
 }
+
 #introduction img {
 	display: block;
 	margin: auto;
@@ -121,16 +417,26 @@ li:hover {
 	flex: 1
 }
 #introduction h2 {
+	margin-top: 0.5em;
 	margin-bottom: 1em;
 }
 
 #introduction p {
 	margin-bottom: 0.5em;
 }
+
 #portfolio h2 {
 	text-align: center;
-	margin-bottom: 1em;
 }
+
+.mes-projets{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 30px;
+	margin-bottom: 2em;
+}
+
 .gallery {
 	width: 100%;
 	display: grid;
@@ -160,7 +466,7 @@ li:hover {
 	font-size: 16px;
 	font-weight: 700;
 	cursor: pointer;
-	transition: all 0.5s;
+	transition: background-color 0.5s;
 }
 
 .filter:hover{
@@ -171,10 +477,6 @@ li:hover {
 .selected{
 	background-color: #1D6154;
 	color: white;
-}
-
-.inactive{
-	display: none;
 }
 
 #contact {

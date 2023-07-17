@@ -13,26 +13,37 @@ async function fetchPost(){
                 },
                 body: JSON.stringify(user)
             });
-            let result = await response.json();
-            window.localStorage.setItem('token', result.token)
-            console.log(result);
+            if(response.ok === true){
+                let result = await response.json();
+                localStorage.setItem('token', result.token)
+                localStorage.setItem('userId', result.userId)
+                console.log(result);
+                form.submit()
+            }
+            else{
+                throw new Error('Impossible de contacter la base de donnée des utilisateurs')
+            }
 }
 
-form.addEventListener('submit', function(form){
-    form.preventDefault();
-})
 
 submitBtn.addEventListener('click', function(){
+    form.addEventListener('submit', function(form){
+        form.preventDefault()
+    });
     if(email.value === user.email && password.value === user.password){
         errorMessage.innerText = ""
-        fetchPost();
-        form.submit();
+        fetchPost();  
     }
     else{
         errorMessage.innerText = "L'email ou le mot de passe est incorrect"
     };
 })
 
+export const token = localStorage.getItem('token')
+export const userId = localStorage.getItem('userId')
 
-const token = window.localStorage.getItem('token');
-console.log(token)
+
+
+
+
+
