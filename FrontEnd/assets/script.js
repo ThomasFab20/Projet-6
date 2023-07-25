@@ -11,10 +11,12 @@ async function fetchProjects(){
     headers:{
         "Accept": "application/json",
     }
+}).catch(e => {
+    console.log("il y'a un problème !");
+    console.log(e);
 })
     if (projet.ok === true){
     let projets = await projet.json()
-    console.log(projets)
 
     for (let i = 0; i < projets.length; i++){
         image++;
@@ -25,7 +27,7 @@ async function fetchProjects(){
 
         imageFigure.setAttribute('class', 'projets');
         
-        imageFigure.setAttribute('id', projets[image].id)
+        imageFigure.setAttribute('id', projets[image].id);
 
         galerie.appendChild(imageFigure);
 
@@ -67,6 +69,8 @@ async function fetchProjects(){
 
         modalImages.src = projets[image].imageUrl;
 
+        modalImages.setAttribute('class', 'projets-images')
+
         modalFigure.appendChild(modalImages)
 
         let editProject = document.createElement('figcaption');
@@ -104,6 +108,8 @@ async function fetchProjects(){
         modalFigure.appendChild(moveIcon);
     }
 
+    // Ajout de l'icône avec les flèches lors du hover
+
     const modalProject = document.querySelectorAll('.modal-project');
     const arrowIcon = document.querySelectorAll('.fa-arrows-up-down-left-right');
 
@@ -124,12 +130,42 @@ async function fetchProjects(){
             }
         })
     }
+
+    // Ajout de la suppression de projet lors du clic sur les icônes de poubelle
+
+    const deleteButton = document.querySelectorAll('.fa-trash-can');
+    
+    for(let button of deleteButton){
+        let tag = button.id;
+        button.addEventListener('click', async function(){
+            for(let projet of modalProject){
+                let id = projet.id;
+                if(tag === id){
+                    await fetch(`http://localhost:5678/api/works/${id}`,{
+                        method: 'DELETE',
+                        headers:{
+                            'Authorization': `Bearer ${authToken}`
+                        },
+                }).catch(e => {
+                    console.log("il y'a un problème !");
+                    console.log(e);
+                }).then(() =>{
+                    projet.style.visibility='hidden'
+                })
+                }
+            }
+        })
+    }
 }
     else{
         throw new Error('Impossible de récupérer la liste des projets');
 }}
 
+// Appel de l'API pour récupérer tous les projets et les ajouter au HTML lors du chargement de la page
+
 window.onload = fetchProjects();
+
+// Mise en place du filtrage des projets lors du clic sur les différents filtres
 
 const filters = document.querySelectorAll('.filter');
 
@@ -155,13 +191,38 @@ for(let filter of filters){
     });
 }
 
+// Appel de l'API pour récupérer les différentes catégories de projet puis les ajouter au formulaire d'ajout de projet
+
+async function getCategories(){
+    let response = await fetch('http://localhost:5678/api/categories', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json;charset=utf-8'
+                },
+            });
+            if(response.ok === true){
+                let result = await response.json();
+
+                for(let category of result){
+                    let options = document.createElement('option');
+                    options.value = category.id;
+                    options.name = "category";
+                    options.innerText = category.name;
+                    formCategories.appendChild(options);
+                }
+            }
+            else{
+                throw new Error('Impossible de passer en mode éditeur')
+            }
+        }
 
 const user = {email: 'sophie.bluel@test.tld', password: 'S0phie'};
 const userSophie = '1';
 const editProjects = document.querySelector('#edit-projects');
 
+// Récupération du token dans l'API afin de le comparer avec celui récupéré lors de l'authentification
 
-async function editorMode(){
+async function tokenVerif(){
     let response = await fetch('http://localhost:5678/api/users/login', {
                 method: 'POST',
                 headers: {
@@ -183,11 +244,17 @@ const editorBanner = document.querySelector('.editor-banner');
 const editButton = document.querySelectorAll('.edit');
 const header = document.querySelector('header');
 
+// Changement dans le HTML pour passer en mode éditeur et donner accès aux modales
+
 window.onload = () => {
     if (userId === userSophie){
-        editorMode()
+        tokenVerif()
         const token = localStorage.getItem('token');
         if(authToken === token){
+
+            for(let filter of filters){
+                filter.classList.add('inactive')
+            }
 
             editorBanner.classList.replace('inactive', 'active');
 
@@ -198,58 +265,59 @@ window.onload = () => {
             header.setAttribute('class', 'header-margin');
             }
         }
+    getCategories()
 }
 
 const modal = document.querySelector('.modal');
 const overlay = document.querySelector('.overlay');
-const closeModal = document.querySelector('.modal-close');
+const closeModal = document.querySelectorAll('.close');
 const modalProjects = document.querySelector('.modal-projects');
 const formCategories = document.querySelector('#category');
 
 
+const formPicture = document.querySelector('#picture');
+const imageDiv = document.querySelector('#preview-div');
+const imagePreview = document.createElement('img');
+const imageFormFile = document.querySelector('.fa-image');
+const labelFormFile = document.querySelector('.picture-upload');
+const sizeFormFile = document.querySelector('.file-max-size');
 
-
-async function getCategories(){
-    let response = await fetch('http://localhost:5678/api/categories', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json;charset=utf-8'
-                },
-            });
-            if(response.ok === true){
-                let result = await response.json();
-
-                for(let category of result){
-                    let options = document.createElement('option');
-                    options.value = category.name;
-                    options.innerText = category.name;
-                    formCategories.appendChild(options);
-                }
-            }
-            else{
-                throw new Error('Impossible de passer en mode éditeur')
-            }
-        }
+// Afficher les modales lors du clic sur le bouton modifier au dessus de la gallerie
 
 function openModal(){
     modal.classList.replace('inactive', 'active');
     overlay.classList.replace('inactive', 'active');
-    getCategories();
 }
+
+// Cacher les modales lors du clic sur le bouton fermer ou en dehors de la modale puis rechargement de la page
 
 function modalClose(){
     modal.classList.replace('active', 'inactive');
     modalSubmit.classList.replace('active', 'inactive');
     overlay.classList.replace('active', 'inactive');
+
+    imageFormFile.classList.replace('hidden', 'active');
+    labelFormFile.classList.replace('hidden', 'active');
+    sizeFormFile.classList.replace('hidden', 'active');
+    imageDiv.classList.replace('active', 'inactive');
+    window.location.reload()
 }
 
 editProjects.addEventListener('click', openModal)
 
-closeModal.addEventListener('click', modalClose)
+// Ajout de l'écouteur d'événement sur les boutons pour fermer les modales
+
+for(let modal of closeModal){
+    modal.addEventListener('click', async function(){
+        modalClose();
+    })
+}
+
+// Ajout de l'écouteur d'événement en dehors de la modale pour fermer les modales
 
 overlay.addEventListener('click', function modalCloseOutside(e){
     if(e.target != modal){
-        modalClose()
+        modalClose();
     }
 })
 
@@ -258,20 +326,94 @@ const modalReturn = document.querySelector('.modal-return');
 const modalSubmit = document.querySelector('.submit');
 const modalCloseSubmit = document.querySelector('.modal-close-submit');
 
+// Ajout de l'écouteur d'événement sur le bouton d'ajout de projet pour afficher la seconde modale
+
 addPicture.addEventListener('click', function(){
     modal.classList.replace('active', 'inactive');
     modalSubmit.classList.replace('inactive', 'active');
 })
 
+// Ajout de l'écouteur d'événement pour revenir à la première modale grâce à la flèche
+
 modalReturn.addEventListener('click', function(){
     modal.classList.replace('inactive', 'active');
     modalSubmit.classList.replace('active', 'inactive');
+
+    imageFormFile.classList.replace('hidden', 'active');
+    labelFormFile.classList.replace('hidden', 'active');
+    sizeFormFile.classList.replace('hidden', 'active');
+    imageDiv.classList.replace('active', 'inactive');
 })
 
 modalCloseSubmit.addEventListener('click', function(){
     modalSubmit.classList.replace('active', 'inactive');
     overlay.classList.replace('active', 'inactive');
 })
+
+// Ajout de l'écouteur d'événement sur le formulaire de sélection d'image pour afficher une prévisualisation lors de la séléction
+
+formPicture.addEventListener('change', function(event){
+    const image = URL.createObjectURL(event.target.files[0]);
+
+    imagePreview.src = image;
+    imagePreview.setAttribute('class', 'preview');
+
+    imageDiv.appendChild(imagePreview);
+
+    imageFormFile.classList.add('hidden');
+    labelFormFile.classList.add('hidden');
+    sizeFormFile.classList.add('hidden');
+
+    imageDiv.classList.replace('inactive', 'active');
+
+    console.log(imagePreview)
+})
+
+
+const postButton = document.querySelector('#project-submit');
+const postForm = document.querySelector('#add-project-form');
+const formTitle = document.querySelector('#title');
+const errorMessage = document.querySelector('.error-message');
+
+// Ajout de l'écouteur d'événement sur le formulaire d'ajout de projet pour vérifier la complétion de tous les champs
+
+postForm.addEventListener('change', function(){
+    if((formPicture.value != '') && (formTitle.value != '') && (formCategories.value != '')){
+        errorMessage.innerText = '';
+        postButton.classList.replace('p-submit-unvalid', 'p-submit-valid')
+    }
+    else{
+        errorMessage.innerText = "Merci de remplir tous les champs ci-dessus";
+        postButton.classList.replace('p-submit-neutral', 'p-submit-unvalid');
+        postButton.classList.replace('p-submit-valid', 'p-submit-unvalid');
+    };
+});
+
+// Déclaration de la fonction pour envoyer les informations du nouveau projet à l'API et le stocker dans la base de données
+
+async function submitForm(){
+    if((formPicture.value != '') && (formTitle.value != '') && (formCategories.value != '')){
+
+        const formData = new FormData(postForm);
+
+        await fetch('http://localhost:5678/api/works', {
+                method:'POST',
+                headers: {
+                    'Authorization': `Bearer ${authToken}`,
+                },
+                body: formData
+            });
+    }
+    postForm.submit();
+}
+
+// Modification du comportement du formulaire pour qu'il exécute notre fonction d'ajout de projet
+
+postForm.addEventListener('submit', function(form){
+    form.preventDefault();
+    submitForm();
+});
+
 
 
 

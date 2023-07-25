@@ -73,6 +73,8 @@ body {
 	background-color: rgba(0, 0, 0, 0.5);
 }
 
+/* CSS MODAL */
+
 .modal{
 	position: fixed;
 	top: 50%;
@@ -161,7 +163,7 @@ body {
 	cursor: pointer;
 }
 
-.modal-body img{
+.projets-images{
 	object-fit: cover;
 	height: 100px;
 }
@@ -225,6 +227,7 @@ body {
 }
 
 .file-upload{
+	position: relative;
 	width: 100%;
 	background-color: #E8F1F6;
 	display: flex;
@@ -232,6 +235,21 @@ body {
 	gap: 15px;
 	align-items: center;
 	padding: 30px 0;
+}
+
+#preview-div{
+	display: flex;
+	justify-content: center;
+}
+
+.preview{
+	position: absolute;
+	top: 0;
+	height: 100%;
+}
+
+.hidden{
+	visibility: hidden;
 }
 
 .file-upload input{
@@ -287,9 +305,16 @@ body {
 	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
 }
 
-#project-submit{
-	cursor: pointer;
+.p-submit-neutral{
 	background-color: #d1d1d1;
+}
+
+.p-submit-unvalid{
+	background-color: rgb(182, 3, 3);
+}
+
+.p-submit-valid{
+	background-color: #1D6154;
 }
 
 header {
@@ -297,6 +322,10 @@ header {
 	justify-content: space-between;
 	margin: 50px 0;
 }
+
+/* CSS MODAL END */
+
+/* CSS EDIT MODE */
 
 .editor-banner{
 	position: fixed;
@@ -349,6 +378,8 @@ figure .edit{
 	margin: 0;
 	cursor: pointer;
 }
+
+/* CSS EDIT MODE END */
 
 .header-margin{
 	margin: 100px 0;
@@ -515,11 +546,15 @@ input[type="submit"]{
 	font-family: 'Syne';
 	font-weight: 700;
 	color: white;
-	background-color: #1D6154;
 	margin : 2em auto ;
 	width: 180px;
 	text-align: center;
 	border-radius: 60px ;
+	cursor: pointer;
+}
+
+.submit-btn{
+	background-color: #1D6154;
 }
 
 footer nav ul {
@@ -545,7 +580,7 @@ footer nav ul {
 
 .error-message{
 	color: rgb(182, 3, 3);
-	padding-bottom: 5px;
+	margin: 15px 0;
 }
 
 #log_in form {
