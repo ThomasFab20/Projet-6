@@ -12,7 +12,7 @@ async function fetchProjects(){
         "Accept": "application/json",
     }
 }).catch(e => {
-    console.log("il y'a un problème !");
+    console.log("Il y'a un problème !");
     console.log(e);
 })
     if (projet.ok === true){
@@ -167,30 +167,6 @@ window.onload = fetchProjects();
 
 // Mise en place du filtrage des projets lors du clic sur les différents filtres
 
-const filters = document.querySelectorAll('.filter');
-
-for(let filter of filters){
-    filter.addEventListener('click', function(){
-        let tag = this.id;
-
-        document.querySelector('.selected').classList.remove('selected');
-        this.classList.add('selected');
-
-        let projets = document.querySelectorAll('.projets');
-
-        for(let projet of projets){
-            projet.classList.replace('active', 'inactive')
-
-            if(tag === projet.dataset.category){
-                projet.classList.replace('inactive', 'active');
-            }
-            if(tag === 'tous'){
-                projet.classList.replace('inactive', 'active');
-            }
-        }
-    });
-}
-
 // Appel de l'API pour récupérer les différentes catégories de projet puis les ajouter au formulaire d'ajout de projet
 
 async function getCategories(){
@@ -215,6 +191,60 @@ async function getCategories(){
                 throw new Error('Impossible de passer en mode éditeur')
             }
         }
+
+async function createFilter(){
+
+    const filterList = document.querySelector('.filters');
+
+
+    let response = await fetch('http://localhost:5678/api/categories', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json;charset=utf-8'
+                },
+            });
+            if(response.ok === true){
+                let result = await response.json();
+
+                for(let category of result){
+                    const filter = document.createElement('button');
+
+                    filter.classList.add('filter');
+
+                    filter.setAttribute('id', category.name);
+
+                    filter.innerText = category.name;
+
+                    filterList.appendChild(filter)
+                }
+            }
+
+    const filters = document.querySelectorAll('.filter')
+
+    for(let filter of filters){
+        filter.addEventListener('click', function(){
+            let tag = this.id;
+
+            document.querySelector('.selected').classList.remove('selected');
+            this.classList.add('selected');
+
+            let projets = document.querySelectorAll('.projets');
+
+            for(let projet of projets){
+                projet.classList.replace('active', 'inactive')
+
+                if(tag === projet.dataset.category){
+                    projet.classList.replace('inactive', 'active');
+                }
+                if(tag === 'tous'){
+                    projet.classList.replace('inactive', 'active');
+                }
+            }
+        });
+    }
+}
+
+window.onload = createFilter()
 
 const user = {email: 'sophie.bluel@test.tld', password: 'S0phie'};
 const userSophie = '1';
@@ -252,9 +282,9 @@ window.onload = () => {
         const token = localStorage.getItem('token');
         if(authToken === token){
 
-            for(let filter of filters){
-                filter.classList.add('inactive')
-            }
+            const filters = document.querySelector('.filters')
+
+            filters.style.visibility='hidden';
 
             editorBanner.classList.replace('inactive', 'active');
 
@@ -382,18 +412,20 @@ postForm.addEventListener('change', function(){
         errorMessage.innerText = '';
         postButton.classList.replace('p-submit-unvalid', 'p-submit-valid')
     }
-    else{
+});
+
+postButton.addEventListener('click', function(){
+    if((formPicture.value == '') || (formTitle.value == '') || (formCategories.value == '')){
         errorMessage.innerText = "Merci de remplir tous les champs ci-dessus";
         postButton.classList.replace('p-submit-neutral', 'p-submit-unvalid');
         postButton.classList.replace('p-submit-valid', 'p-submit-unvalid');
-    };
-});
+    }
+})
 
 // Déclaration de la fonction pour envoyer les informations du nouveau projet à l'API et le stocker dans la base de données
 
 async function submitForm(){
     if((formPicture.value != '') && (formTitle.value != '') && (formCategories.value != '')){
-
         const formData = new FormData(postForm);
 
         await fetch('http://localhost:5678/api/works', {
@@ -403,8 +435,9 @@ async function submitForm(){
                 },
                 body: formData
             });
+
+        postForm.submit();
     }
-    postForm.submit();
 }
 
 // Modification du comportement du formulaire pour qu'il exécute notre fonction d'ajout de projet
